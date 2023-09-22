@@ -1,9 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Countries, User } from './interfaces/interfaces';
-
-import { Observable, tap } from 'rxjs';
 
 import { ValidatorsService } from './services/validators/validators.service';
 import { UsersService } from './services/users-service.service';
@@ -14,20 +12,22 @@ import { UsersService } from './services/users-service.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
 
   title = 'crud';
 
   public countries: string[] = Object.values(Countries);
   private usersService = inject(UsersService);
-  public users: User[] = [];
+  // public users: User[] = [];
+  public users = signal<User[]>([]);
 
   private formBuilder = inject(FormBuilder);
   private validatorsService = inject(ValidatorsService);
 
   public myForm: FormGroup = this.formBuilder.group({
 
-    name: ["", Validators.required],
+    name: ["", Validators.required],  // TODO: más validaciones
     password1: ["", Validators.required],
     password2: ["", Validators.required],
     email: ["", Validators.required],
@@ -41,14 +41,7 @@ export class AppComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.usersService.getUsers().subscribe(
-      users => {
-        console.log(users);
-        this.users = users;
-      }
-    );
-
-    console.log(this.users);
+    this.getUsers();
   }
 
   isValidField(field: string) {
@@ -56,37 +49,52 @@ export class AppComponent implements OnInit {
     return this.validatorsService.validField(this.myForm, field);
   }
 
-  onSubmit() {
+  getUsers() {
+
+    return this.usersService.getUsers().subscribe(
+      users => {
+     // console.log(users);
+        this.users.set(users);
+     // this.users = users;
+      });
+  }
+
+  createUser() {
 
     console.log(this.myForm.value);
 
-    if (this.myForm.invalid) {
+    // const form = this.myForm.value as User;
 
-      // console.log(this.myForm);
-      this.myForm.markAllAsTouched();
+    const user = {
+
+      id: this.myForm.get( "id" )?.value,
+      name: this.myForm.get( "name" )?.value,
+      password: this.myForm.get( "password1" )?.value,
+      email:  this.myForm.get( "email" )?.value,
+      check: this.myForm.get( "check" )?.value,
+      country: this.myForm.get( "country" )?.value,
+      city: this.myForm.get( "city" )?.value,
     }
 
-    // this.users.push( this.getFormUser() );
+    if (this.myForm.invalid) {
 
+      this.myForm.markAllAsTouched();
+      // TODO: alert "faltan datos"
+      return;
+    }
+
+    this.usersService.addUser( user ).subscribe();
+ // this.usersService.addUser( form ).subscribe();
+    //this.getUsers(); // ! xq no funciona antes y sí después?
     this.myForm.reset();
+    this.getUsers();
   }
 
-  getFormUser() {
+  deleteUser(id: number) {
 
-    // return {
-
-    //   name: this.myForm.get( "name" )?.value,
-    //   password: this.myForm.get( "password" )?.value,
-    //   email:  this.myForm.get( "email" )?.value,
-    //   check: this.myForm.get( "check" )?.value,
-    //   country: this.myForm.get( "country" )?.value,
-    //   city: this.myForm.get( "city" )?.value,
-    // }
+    this.usersService.eraseUser( id ).subscribe();
+    this.getUsers(); // ! porque aqui no funciona?
   }
 
-  deleteUser(email: string) {
-
-
-
-  }
+  editUser( user: User ) {}
 }

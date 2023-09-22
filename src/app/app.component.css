@@ -12,6 +12,7 @@ span {
 
 #erase {
   width: 20px;
+  cursor: pointer;
 }
 
 form {

@@ -2,7 +2,7 @@
   <div class="col-3">
     <h5>Formulario de Registro</h5>
 
-    <form [formGroup]="myForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <form [formGroup]="myForm" (ngSubmit)="createUser()" autocomplete="off">
 
       <div class="row">
         <label class="col col-form-label" for="name">Nombre de usuario</label>
@@ -101,15 +101,18 @@
         </tr>
       </thead>
       <tbody>
-        <!-- <tr *ngFor="let person of users; index as i">
+        <tr *ngFor="let person of users(); index as i">
           <th scope="row">{{ i + 1 }}</th>
           <td>{{ person.name  }}</td>
           <td>{{ person.email  }}</td>
           <td><img *ngIf="person.check" src="../assets/images/icons8-aceptar-30.png" alt="accept"></td>
           <td>{{ person.country  }}</td>
           <td>{{ person.city  }}</td>
-          <td> <img id="edit" src="../assets/images/icons8-editar.gif" alt=""><img id="erase" src="../assets/images/icons8-borrar.gif" alt=""></td>
-        </tr> -->
+          <td>
+            <img id="edit" src="../assets/images/icons8-editar.gif" alt="edit">
+            <img id="erase" (click)="deleteUser( person.id )" src="../assets/images/icons8-borrar.gif" alt="edit">
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

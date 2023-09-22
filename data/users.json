@@ -1,24 +1,50 @@
-
 {
   "users": [
     {
       "id": 1,
       "name": "Dani",
       "password": "123",
-      "email":  "dani@gmail.com",
+      "email": "dani@gmail.com",
       "check": true,
       "country": "España",
       "city": "Málaga"
-     },
-     {
+    },
+    {
       "id": 2,
       "name": "Antonio",
       "password": "456",
-      "email":  "toni@gmail.com",
+      "email": "toni@gmail.com",
       "check": false,
       "country": "Italia",
       "city": "Milán"
-     }
+    },
+    {
+      "id": 3,
+      "name": "ale",
+      "password": "123",
+      "email": "bchehd@jsjsj",
+      "check": false,
+      "country": "España",
+      "city": "pernanbuco"
+    },
+    {
+      "name": "Ali",
+      "password": "123",
+      "email": "oluuil@qwqwqw",
+      "check": true,
+      "country": "India",
+      "city": "dfsdgdhfth",
+      "id": 4
+    },
+    {
+      "name": "asdd",
+      "password1": "123",
+      "password2": "123",
+      "email": "dsvsdsdsdcds",
+      "check": "",
+      "country": "Angola",
+      "city": "asdcdacdscdsc",
+      "id": 5
+    }
   ]
 }
-
