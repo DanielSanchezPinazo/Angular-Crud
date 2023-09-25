@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, WritableSignal, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Countries, User } from './interfaces/interfaces';
@@ -14,13 +14,13 @@ import { UsersService } from './services/users-service.service';
 })
 
 export class AppComponent implements OnInit {
-
   title = 'crud';
 
   public countries: string[] = Object.values(Countries);
   private usersService = inject(UsersService);
-  // public users: User[] = [];
-  public users = signal<User[]>([]);
+  public users: User[] = [];
+  // public users = signal<User[]>([]);
+  public currentUser?: User;
 
   private formBuilder = inject(FormBuilder);
   private validatorsService = inject(ValidatorsService);
@@ -40,30 +40,20 @@ export class AppComponent implements OnInit {
     ]
   });
 
+  public name = this.myForm.get( "name" )?.value;
+  //! no se puede desestrucutrar así
+  // public { name, password1: password, email, check, country, city } = this.myForm;
+
   ngOnInit(): void {
     this.getUsers();
   }
 
-  isValidField(field: string) {
+  isValidField(field: string): boolean | null {
 
     return this.validatorsService.validField(this.myForm, field);
   }
 
-  getUsers() {
-
-    return this.usersService.getUsers().subscribe(
-      users => {
-     // console.log(users);
-        this.users.set(users);
-     // this.users = users;
-      });
-  }
-
-  createUser() {
-
-    console.log(this.myForm.value);
-
-    // const form = this.myForm.value as User;
+  getFormUser() {
 
     const user = {
 
@@ -76,6 +66,32 @@ export class AppComponent implements OnInit {
       city: this.myForm.get( "city" )?.value,
     }
 
+    return user;
+  }
+
+  getUsers()/*: WritableSignal<User[]>*/ { //! porque no se puede asignar ese tipo?
+
+    return this.usersService.getUsers().subscribe(
+      users => {
+     // console.log(users);
+     // this.users.set(users);
+     this.users = users;
+      });
+  }
+// ! no funciona como computed
+  // public getUsers = computed( () => {
+
+  //   this.usersService.getUsers().subscribe(
+  //     users => {
+  //       this.users.set(users);
+  //    return users;
+  //     })
+  //    } );
+
+  public createUser(): void {
+
+    const user: User = this.getFormUser();
+
     if (this.myForm.invalid) {
 
       this.myForm.markAllAsTouched();
@@ -84,17 +100,39 @@ export class AppComponent implements OnInit {
     }
 
     this.usersService.addUser( user ).subscribe();
- // this.usersService.addUser( form ).subscribe();
     //this.getUsers(); // ! xq no funciona antes y sí después?
     this.myForm.reset();
     this.getUsers();
   }
 
-  deleteUser(id: number) {
+  deleteUser(id: number): void {
 
     this.usersService.eraseUser( id ).subscribe();
-    this.getUsers(); // ! porque aqui no funciona?
+    this.getUsers(); // ! porque aquí funciona una vez sí una vez no
   }
 
-  editUser( user: User ) {}
+  getUser( user: User ) {
+    // console.log(user);
+    this.usersService.getUserById( user ).subscribe( user => this.currentUser = user);
+    // console.log(user);
+// ! Por qué nada de esto funciona?
+    /*if ( user.check ) {
+       const check = document.getElementById("check")!.checked = true;
+       const checkbox = document.getElementById("check")!.setAttribute( "checked", "true" );
+    }*/
+  }
+
+  patchUser() {
+
+    console.log(this.currentUser);
+
+    const user = this.getFormUser();
+
+    console.log(user);
+
+    this.usersService.modUser( user ).subscribe( user => this.currentUser = user );
+    console.log(user);
+    this.getUsers();
+
+  }
 }

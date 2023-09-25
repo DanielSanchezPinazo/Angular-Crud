@@ -33,9 +33,14 @@ export class UsersService {
     );
   }
 
-  public modUser( user: User ) {
+  public getUserById( user: User ): Observable<User> {
 
-    return this.http.patch<User>( `${this.baseUrl}/users/${ user.id }`, user )
+    return this.http.get<User>( `${this.baseUrl}/users/${ user.id }` );
+  }
+
+  public modUser( user: User ): Observable<User> {
+
+    return this.http.patch<User>( `${this.baseUrl}/users/${ user.id }`, user );
   }
 
 }
