@@ -5,10 +5,14 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormComponent } from './components/reactive-form/reactive-form.component';
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ReactiveFormComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,

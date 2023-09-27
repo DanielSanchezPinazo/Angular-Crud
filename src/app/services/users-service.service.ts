@@ -33,9 +33,9 @@ export class UsersService {
     );
   }
 
-  public getUserById( user: User ): Observable<User> {
+  public getUserById( id: number ): Observable<User> {
 
-    return this.http.get<User>( `${this.baseUrl}/users/${ user.id }` );
+    return this.http.get<User>( `${this.baseUrl}/users/${ id }` );
   }
 
   public modUser( user: User ): Observable<User> {
