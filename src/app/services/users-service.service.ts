@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environments } from 'src/environment/environment';
 
 import { User } from '../interfaces/interfaces';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, BehaviorSubject, of, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,29 @@ export class UsersService {
 
   private http = inject( HttpClient );
   private baseUrl: string = environments.baseUrl;
+  private updateTable$ = new BehaviorSubject(true);
+  private currentUser$ = new Subject();
+  private unsubscribe$ = new Subject<void>();
+
+  public setUpdateTableSubject( value: boolean ): void {
+
+    this.updateTable$.next(value);
+  };
+
+  public getUpdateTableSubject(): Observable<boolean> {
+
+    return this.updateTable$.asObservable();
+  };
+
+  public setCurrentUser( user: User ): void {
+
+    this.currentUser$.next( user );
+  };
+
+  public getCurrentUser(): Observable<any> { //! por qué no se puede tipar
+
+    return this.currentUser$.asObservable();
+  };
 
   public getUsers(): Observable<User[]> {
 
@@ -43,4 +66,11 @@ export class UsersService {
     return this.http.patch<User>( `${this.baseUrl}/users/${ user.id }`, user );
   }
 
+
+  public unsuscribe(): Subject<void> {
+
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+    return this.unsubscribe$;
+  }
 }
