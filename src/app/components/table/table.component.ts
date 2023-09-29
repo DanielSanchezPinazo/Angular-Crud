@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject, of, switchMap, takeUntil } from 'rxjs';
 
 import { User } from 'src/app/interfaces/interfaces';
@@ -15,13 +16,22 @@ export class TableComponent implements OnInit, OnDestroy {
   public users: User[] = [];
   public message$ = "";
 
+  @ViewChild("alertMessage", { static: false })
+  public alertMessage!: NgbAlert;
+
   ngOnInit(): void {
 
     this.updateTable();
 
     this.usersService.getSuccessMessage()
       .pipe( takeUntil( this.usersService.unsuscribe()))
-      .subscribe( (message) => this.message$ = message);
+      .subscribe( (message) => {
+        this.message$ = message;
+        setTimeout(() => {
+
+          this.alertMessage?.close()
+        }, 2000)
+      });
   };
 
   ngOnDestroy(): void {
@@ -78,13 +88,18 @@ export class TableComponent implements OnInit, OnDestroy {
 
     this.usersService.eraseUser( id )
       .pipe(
+
         switchMap(() => this.usersService.getUsers( )),
         takeUntil( this.usersService.unsuscribe())
       )
       .subscribe( (users: User[]) => {
+
         this.users = users;
         this.usersService.setSuccessMessage( "USUARIO BORRADO" );
-        //TODO:BORRAR FORMULARIO
+        setTimeout(() => {
+
+          this.alertMessage.close()
+        }, 2000);
       });
   };
 

@@ -29,6 +29,6 @@
 
 </table>
 
-<ngb-alert *ngIf="message$" type="warning" (closed)="closeMessage()">{{ message$ }}</ngb-alert>
+<ngb-alert #alertMessage *ngIf="message$" type="warning" (closed)="closeMessage()">{{ message$ }}</ngb-alert>
 
 

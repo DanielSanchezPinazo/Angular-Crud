@@ -23,10 +23,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
     this.editCurrentUser();
 
-    if (this.usersService.getSuccessMessage()) {
-
-      this.myForm.reset();
-    }
+    this.cleanForm();
 
   };
 
@@ -67,6 +64,13 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
   //   })
   // }
+
+  public cleanForm() {
+
+    this.usersService.getSuccessMessage()
+      .pipe( takeUntil ( this.usersService.unsuscribe()))
+      .subscribe( () => this.myForm.reset());
+    }
 
   public isValidField(field: string): boolean | null {
 
