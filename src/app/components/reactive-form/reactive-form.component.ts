@@ -1,9 +1,13 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Countries, User } from 'src/app/interfaces/interfaces';
+
 import { UsersService } from 'src/app/services/users-service.service';
 import { ValidatorsService } from 'src/app/services/validators/validators.service';
+
+import { Observable } from 'rxjs';
+import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-reactive-form',
@@ -12,15 +16,24 @@ import { ValidatorsService } from 'src/app/services/validators/validators.servic
 })
 export class ReactiveFormComponent implements OnInit, OnDestroy {
 
+  @ViewChild('selfClosingAlert', { static: false })
+  selfClosingAlert: NgbAlert | undefined;
+
   ngOnInit(): void {
 
     this.editCurrentUser();
+
+    if (this.usersService.getSuccessMessage()) {
+
+      this.myForm.reset();
+    }
 
   };
 
   ngOnDestroy(): void {
 
     this.usersService.unsuscribe();
+
   };
 
   public countries: string[] = Object.values(Countries);
@@ -32,11 +45,11 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
   public myForm: FormGroup = this.formBuilder.group({
 
-    name: ["", Validators.required],  // TODO: más validaciones
-    password: ["", Validators.required],
-    password2: ["", Validators.required],
-    email: ["", Validators.required],
-    check: [""],
+    name: ["", [ Validators.required , Validators.minLength(4)]],
+    password: ["", [Validators.required, Validators.minLength( 3 )] ],
+    password2: ["", [Validators.required, Validators.minLength( 3 )]],
+    email: ["", [ Validators.required, Validators.email ]],
+    check: [ false ],
     country: ["", Validators.required],
     city: ["", Validators.required],
   }, {
@@ -81,7 +94,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
     if (this.myForm.invalid) {
 
-      this.myForm.markAllAsTouched();  // TODO: alert "faltan datos"
+      this.myForm.markAllAsTouched();
       return;
     };
 
@@ -90,6 +103,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.myForm.reset();
         this.usersService.setUpdateTableSubject(true);
+        this.usersService.setSuccessMessage( "USUARIO CREADO" );
       });
   }
 

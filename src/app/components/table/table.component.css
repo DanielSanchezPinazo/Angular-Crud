@@ -9,3 +9,7 @@
   width: 20px;
   cursor: pointer;
 }
+
+ngb-alert {
+  text-align: center;
+}

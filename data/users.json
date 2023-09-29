@@ -31,18 +31,18 @@
       "name": "Raul",
       "password": "asd",
       "email": "fhjghnfhrth",
-      "check": true,
+      "check": false,
       "country": "Lesoto",
       "city": "rthrthrthrt",
       "id": 4
     },
     {
-      "name": "dfggsdsdgs",
-      "password": "vbn",
-      "email": "srtrehdther",
+      "name": "dffdafsdsd",
+      "password": "cvb",
+      "email": "sdfefsdf@sdfsd",
       "check": null,
-      "country": "Ucrania",
-      "city": "dfgdfgdfg",
+      "country": "Maldivas",
+      "city": "sdfsdfs",
       "id": 5
     }
   ]

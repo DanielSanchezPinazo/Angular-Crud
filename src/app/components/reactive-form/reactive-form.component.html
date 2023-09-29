@@ -1,5 +1,4 @@
 
-
     <h5>Formulario de Registro</h5>
 
     <form [formGroup]="myForm" autocomplete="off">
@@ -10,6 +9,7 @@
           <input id="name" type="text" class="form-control" placeholder="Usuario"
              formControlName="name">
         </div>
+        <span *ngIf="isValidField( 'name' )">El nombre es un campo necesario</span>
       </div>
 
       <div class="row">
@@ -18,6 +18,7 @@
           <input id="password" type="password" class="form-control" placeholder="Contraseña"
              formControlName="password">
         </div>
+        <span *ngIf="isValidField( 'password' )">La contraseña es un campo necesario</span>
       </div>
 
       <div class="row">
@@ -35,6 +36,7 @@
           <input id="email" type="text" class="form-control" placeholder="Correo"
            formControlName="email">
         </div>
+        <span *ngIf="isValidField( 'email' )">El correo es un campo necesario y debe tener formato de email</span>
       </div>
 
       <div class="row m-2">
@@ -50,6 +52,7 @@
            formControlName="country">
           <option *ngFor="let country of countries; let i = index" [value]="country">{{ country }}</option>
         </select>
+        <span *ngIf="isValidField( 'country' )">El país es un campo necesario</span>
       </div>
 
       <div class="row">
@@ -58,6 +61,7 @@
           <input id="city" type="text" class="form-control" placeholder="Ciudad"
              formControlName="city">
         </div>
+        <span *ngIf="isValidField( 'city' )">La ciudad es un campo necesario</span>
       </div>
 
       <button *ngIf="!currentUser" (click)="createUser()" class="btn btn-primary mt-2">Crear</button>
@@ -65,11 +69,11 @@
 
     </form>
 
-<!-- <h2>Form Valid: {{ myForm.valid }}</h2>
-    <h2>Form Status: {{ myForm.status }}</h2>
-    <h2>Form errors</h2>
-    <pre>{{ myForm.errors | json }}</pre>
+    <h2><pre> FormErrors: {{ myForm.errors | json }}</pre></h2>
 
+
+    <h5>Form Valid: {{ myForm.valid }} | Form Status: {{ myForm.status }}</h5>
+<!--    <h5>Form errors</h5>
     <h5>Nombre</h5>
     <pre>{{ myForm.controls["name"].errors | json }}</pre>
 
@@ -89,5 +93,5 @@
     <pre>{{ myForm.value.country | json }}</pre>
 
     <h5>Ciudad</h5>
-    <pre>{{ myForm.controls["city"].errors | json }}</pre> -->
-
+    <pre>{{ myForm.controls["city"].errors | json }}</pre>
+ -->

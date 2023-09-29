@@ -1,31 +1,34 @@
+<table class="table table-striped">
 
+  <thead>
+    <tr>
+      <th scope="col">nº</th>
+      <th scope="col">Nombre del usuario</th>
+      <th scope="col">Correo</th>
+      <th scope="col">Suscrito</th>
+      <th scope="col">País</th>
+      <th scope="col">Ciudad</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">nº</th>
-        <th scope="col">Nombre del usuario</th>
-        <th scope="col">Correo</th>
-        <th scope="col">Suscrito</th>
-        <th scope="col">País</th>
-        <th scope="col">Ciudad</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let person of users; index as i">
-        <th scope="row">{{ i + 1 }}</th>
-        <td>{{ person.name  }}</td>
-        <td>{{ person.email  }}</td>
-        <td id="suscription"><img *ngIf="person.check" src="../assets/images/icons8-aceptar-30.png" alt="accept"></td>
-        <td>{{ person.country  }}</td>
-        <td>{{ person.city  }}</td>
-        <td>
-          <img id="edit" (click)="getUser( person.id )" src="../assets/images/icons8-editar.gif" alt="edit">
-          <img id="erase" (click)="deleteUser( person.id )" src="../assets/images/icons8-borrar.gif" alt="edit">
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <tbody>
+    <tr *ngFor="let person of users; index as i">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ person.name }}</td>
+      <td>{{ person.email }}</td>
+      <td id="suscription"><img *ngIf="person.check" src="../assets/images/icons8-aceptar-30.png" alt="accept"></td>
+      <td>{{ person.country }}</td>
+      <td>{{ person.city }}</td>
+      <td>
+        <img id="edit" (click)="getUser( person.id )" src="../assets/images/icons8-editar.gif" alt="edit">
+        <img id="erase" (click)="deleteUser( person.id )" src="../assets/images/icons8-borrar.gif" alt="edit">
+      </td>
+    </tr>
+  </tbody>
+
+</table>
+
+<ngb-alert *ngIf="message$" type="warning" (closed)="closeMessage()">{{ message$ }}</ngb-alert>
 
 

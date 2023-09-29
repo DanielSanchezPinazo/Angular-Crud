@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, of, switchMap, takeUntil } from 'rxjs';
+
 import { User } from 'src/app/interfaces/interfaces';
 import { UsersService } from 'src/app/services/users-service.service';
 
@@ -12,13 +13,28 @@ export class TableComponent implements OnInit, OnDestroy {
 
   private usersService = inject(UsersService);
   public users: User[] = [];
-
+  public message$ = "";
 
   ngOnInit(): void {
 
+    this.updateTable();
+
+    this.usersService.getSuccessMessage()
+      .pipe( takeUntil( this.usersService.unsuscribe()))
+      .subscribe( (message) => this.message$ = message);
+  };
+
+  ngOnDestroy(): void {
+
+    this.usersService.unsuscribe();
+  };
+
+  public updateTable() {
+
     this.usersService.getUpdateTableSubject()
       .pipe( takeUntil( this.usersService.unsuscribe()))
-      .subscribe( (result) => {
+      .subscribe( result => {
+
         if (result) {
 
           this.getUsers();
@@ -27,13 +43,7 @@ export class TableComponent implements OnInit, OnDestroy {
       });
   };
 
-  ngOnDestroy(): void {
-
-    this.usersService.unsuscribe();
-  };
-
-
-  getUsers()/*: WritableSignal<User[]>*/ { //! porque no se puede asignar ese tipo?
+  public getUsers()/*: WritableSignal<User[]>*/ { //! porque no se puede asignar ese tipo?
 
     return this.usersService.getUsers()
       .pipe( takeUntil( this.usersService.unsuscribe()))
@@ -42,7 +52,7 @@ export class TableComponent implements OnInit, OnDestroy {
       // this.users.set(users);
         this.users = users;
       });
-  }
+  };
 // ! no funciona como computed
   // public getUsers = computed( () => {
 
@@ -53,7 +63,7 @@ export class TableComponent implements OnInit, OnDestroy {
   //     })
   //    } );
 
-  getUser( id: number ) {
+  public getUser( id: number ) {
 
     this.usersService.getUserById( id )
       .pipe( takeUntil( this.usersService.unsuscribe()))
@@ -62,15 +72,24 @@ export class TableComponent implements OnInit, OnDestroy {
         // console.log( this.usersService.getCurrentUser());
       });
     // console.log(user);
-  }
+  };
 
-  deleteUser(id: number): void {
+  public deleteUser(id: number): void {
 
     this.usersService.eraseUser( id )
-      .pipe( switchMap(() => this.usersService.getUsers( )))
-      .pipe( takeUntil( this.usersService.unsuscribe()))
-      .subscribe((users: User[])=> {
+      .pipe(
+        switchMap(() => this.usersService.getUsers( )),
+        takeUntil( this.usersService.unsuscribe())
+      )
+      .subscribe( (users: User[]) => {
         this.users = users;
+        this.usersService.setSuccessMessage( "USUARIO BORRADO" );
+        //TODO:BORRAR FORMULARIO
       });
+  };
+
+  public closeMessage() {
+
+    this.usersService.setSuccessMessage( "" );
   }
 }
