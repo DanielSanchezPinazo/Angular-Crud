@@ -38,7 +38,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
   public myForm: FormGroup = this.formBuilder.group({
 
-    name: ["", [ Validators.required , Validators.minLength(4)]],
+    name: ["", [ Validators.required , Validators.minLength(3)]],
     password: ["", [Validators.required, Validators.minLength( 3 )] ],
     password2: ["", [Validators.required, Validators.minLength( 3 )]],
     email: ["", [ Validators.required, Validators.email ]],
