@@ -6,7 +6,6 @@ import { Countries, User } from 'src/app/interfaces/interfaces';
 import { UsersService } from 'src/app/services/users-service.service';
 import { ValidatorsService } from 'src/app/services/validators/validators.service';
 
-import { Observable } from 'rxjs';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -22,15 +21,12 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.editCurrentUser();
-
     this.cleanForm();
-
   };
 
   ngOnDestroy(): void {
 
     this.usersService.unsuscribe();
-
   };
 
   public countries: string[] = Object.values(Countries);
@@ -105,6 +101,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     this.usersService.addUser(user)
       .pipe( takeUntil ( this.usersService.unsuscribe()))
       .subscribe(() => {
+
         this.myForm.reset();
         this.usersService.setUpdateTableSubject(true);
         this.usersService.setSuccessMessage( "USUARIO CREADO" );
@@ -115,7 +112,8 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     this.usersService.getCurrentUser()
       .pipe( takeUntil( this.usersService.unsuscribe()))
       // .pipe( filter( user => user.id ))
-      .subscribe(result => {
+      .subscribe( result => {
+
         this.currentUser = result;
         this.myForm.patchValue(this.currentUser!);
       })
@@ -125,13 +123,14 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
     const id: number = this.currentUser!.id;
     const user: User = { id, ...this.getFormUser() };
-    console.log(this.currentUser);
-    console.log(user);
+    // console.log(this.currentUser);
+    // console.log(user);
     this.usersService.modUser( user )
       .pipe( takeUntil( this.usersService.unsuscribe()))
       .subscribe( () => {
 
         this.usersService.setUpdateTableSubject(true);
+        this.usersService.setSuccessMessage( "USUARIO EDITADO" );
         this.currentUser = undefined;
         this.myForm.reset();
       });

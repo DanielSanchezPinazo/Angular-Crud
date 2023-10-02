@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subject, of, switchMap, takeUntil } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs';
 
 import { User } from 'src/app/interfaces/interfaces';
 import { UsersService } from 'src/app/services/users-service.service';
@@ -22,16 +22,7 @@ export class TableComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.updateTable();
-
-    this.usersService.getSuccessMessage()
-      .pipe( takeUntil( this.usersService.unsuscribe()))
-      .subscribe( (message) => {
-        this.message$ = message;
-        setTimeout(() => {
-
-          this.alertMessage?.close()
-        }, 2000)
-      });
+    this.showMessage();
   };
 
   ngOnDestroy(): void {
@@ -52,6 +43,20 @@ export class TableComponent implements OnInit, OnDestroy {
         }
       });
   };
+
+  public showMessage() {
+
+    this.usersService.getSuccessMessage()
+    .pipe( takeUntil( this.usersService.unsuscribe()))
+    .subscribe( (message) => {
+
+      this.message$ = message;
+      setTimeout(() => {
+
+        this.alertMessage?.close()
+      }, 2000)
+    });
+  }
 
   public getUsers()/*: WritableSignal<User[]>*/ { //! porque no se puede asignar ese tipo?
 
@@ -96,10 +101,6 @@ export class TableComponent implements OnInit, OnDestroy {
 
         this.users = users;
         this.usersService.setSuccessMessage( "USUARIO BORRADO" );
-        setTimeout(() => {
-
-          this.alertMessage.close()
-        }, 2000);
       });
   };
 
