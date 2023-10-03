@@ -15,50 +15,49 @@ export class UsersService {
   private baseUrl: string = environments.baseUrl;
   private updateTable$ = new BehaviorSubject<boolean>(true);
   private currentUser$ = new Subject<User>();
-  private unsubscribe$ = new Subject<void>();
   private successMessage$ = new BehaviorSubject<string>("");
 
-  public setUpdateTableSubject( value: boolean ): void {
+  public setUpdateTable$( value: boolean ): void {
 
     this.updateTable$.next(value);
   };
 
-  public getUpdateTableSubject(): Observable<boolean> {
+  public getUpdateTable$(): Observable<boolean> {
 
     return this.updateTable$.asObservable();
   };
 
-  public setCurrentUser( user: User ): void {
+  public setCurrentUser$( user: User ): void {
 
     this.currentUser$.next( user );
   };
 
-  public getCurrentUser(): Observable<any> { //! por qué no se puede tipar
+  public getCurrentUser$(): Observable<User> {
 
     return this.currentUser$.asObservable();
   };
 
-  public setSuccessMessage( message: string): void {
+  public setSuccessMessage$( message: string): void {
 
     this.successMessage$.next(message);
   };
 
-  public getSuccessMessage() {
+  public getSuccessMessage$(): Observable<string> {
 
     return this.successMessage$.asObservable();
   };
 
-  public getUsers(): Observable<User[]> {
+  public getUsers$(): Observable<User[]> {
 
     return this.http.get<User[]>( `${this.baseUrl}/users` );
   };
 
-  public addUser( user: User ): Observable<User> {
+  public addUser$( user: User ): Observable<User> {
 
     return this.http.post<User>( `${this.baseUrl}/users`, user );
   };
 
-  public eraseUser( id: number ): Observable<boolean> {
+  public eraseUser$( id: number ): Observable<boolean> {
 
     return this.http.delete( `${this.baseUrl}/users/${ id }` )
     .pipe(
@@ -67,20 +66,13 @@ export class UsersService {
     );
   };
 
-  public getUserById( id: number ): Observable<User> {
+  public getUserById$( id: number ): Observable<User> {
 
     return this.http.get<User>( `${this.baseUrl}/users/${ id }` );
   };
 
-  public modUser( user: User ): Observable<User> {
+  public modUser$( user: User ): Observable<User> {
 
     return this.http.patch<User>( `${this.baseUrl}/users/${ user.id }`, user );
-  };
-
-  public unsuscribe(): Subject<void> {
-
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-    return this.unsubscribe$;
   };
 }

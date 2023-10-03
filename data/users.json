@@ -10,15 +10,6 @@
       "city": "Málaga"
     },
     {
-      "id": 2,
-      "name": "Antonio",
-      "password": "456",
-      "email": "toni@gmail.com",
-      "check": false,
-      "country": "Italia",
-      "city": "Milán"
-    },
-    {
       "name": "Alejandro",
       "password": "789",
       "email": "dzfxdbdfbd",
@@ -74,12 +65,21 @@
     },
     {
       "name": "Ana",
-      "password": "123",
-      "email": "qwqweqw@sdfsd",
-      "check": true,
-      "country": "Turquía",
-      "city": "dfsdfsfsdf",
+      "password": "sdf",
+      "email": "sdfsdfds@sdf",
+      "check": false,
+      "country": "Etiopía",
+      "city": "sdfsdfsd",
       "id": 11
+    },
+    {
+      "name": "Raquel",
+      "password": "xcv",
+      "email": "xcvxcvxcv@sdgs",
+      "check": null,
+      "country": "Países Bajos",
+      "city": "xfxvxcvx",
+      "id": 12
     }
   ]
 }

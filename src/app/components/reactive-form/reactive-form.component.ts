@@ -7,6 +7,7 @@ import { UsersService } from 'src/app/services/users-service.service';
 import { ValidatorsService } from 'src/app/services/validators/validators.service';
 
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-reactive-form',
@@ -18,23 +19,13 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
   @ViewChild('selfClosingAlert', { static: false })
   selfClosingAlert: NgbAlert | undefined;
 
-  ngOnInit(): void {
-
-    this.editCurrentUser();
-    this.cleanForm();
-  };
-
-  ngOnDestroy(): void {
-
-    this.usersService.unsuscribe();
-  };
-
   public countries: string[] = Object.values(Countries);
   // public users = signal<User[]>([]);
   public currentUser?: User;
   private formBuilder = inject(FormBuilder);
   private validatorsService = inject(ValidatorsService);
   private usersService = inject(UsersService);
+  private unsubscribe$ = new Subject<void>();
 
   public myForm: FormGroup = this.formBuilder.group({
 
@@ -51,6 +42,17 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     ]
   });
 
+  ngOnInit(): void {
+
+    this.getCurrentUser();
+    this.cleanForm();
+  };
+
+  ngOnDestroy(): void {
+
+    this.unsuscribe();
+  };
+
   //! no se puede desestrucutrar así
   // public { name, password1: password, email, check, country, city } = this.myForm;
 
@@ -63,10 +65,10 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
   public cleanForm() {
 
-    this.usersService.getSuccessMessage()
-      .pipe( takeUntil ( this.usersService.unsuscribe()))
+    this.usersService.getSuccessMessage$()
+      .pipe( takeUntil ( this.unsuscribe()))
       .subscribe( () => this.myForm.reset());
-    }
+    };
 
   public isValidField(field: string): boolean | null {
 
@@ -90,27 +92,27 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
 
   public createUser(): void {
 
-    const user = this.getFormUser() as User;
-
     if (this.myForm.invalid) {
 
       this.myForm.markAllAsTouched();
       return;
     };
 
-    this.usersService.addUser(user)
-      .pipe( takeUntil ( this.usersService.unsuscribe()))
+    const user = this.getFormUser() as User;
+
+    this.usersService.addUser$(user)
+      .pipe( takeUntil ( this.unsuscribe()))
       .subscribe(() => {
 
         this.myForm.reset();
-        this.usersService.setUpdateTableSubject(true);
-        this.usersService.setSuccessMessage( "USUARIO CREADO" );
+        this.usersService.setUpdateTable$(true);
+        this.usersService.setSuccessMessage$( "USUARIO CREADO" );
       });
   }
 
-  public editCurrentUser() {
-    this.usersService.getCurrentUser()
-      .pipe( takeUntil( this.usersService.unsuscribe()))
+  public getCurrentUser() {
+    this.usersService.getCurrentUser$()
+      .pipe( takeUntil( this.unsuscribe()))
       // .pipe( filter( user => user.id ))
       .subscribe( result => {
 
@@ -125,14 +127,21 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     const user: User = { id, ...this.getFormUser() };
     // console.log(this.currentUser);
     // console.log(user);
-    this.usersService.modUser( user )
-      .pipe( takeUntil( this.usersService.unsuscribe()))
+    this.usersService.modUser$( user )
+      .pipe( takeUntil( this.unsuscribe()))
       .subscribe( () => {
 
-        this.usersService.setUpdateTableSubject(true);
-        this.usersService.setSuccessMessage( "USUARIO EDITADO" );
+        this.usersService.setUpdateTable$(true);
+        this.usersService.setSuccessMessage$( "USUARIO EDITADO" );
         this.currentUser = undefined;
         this.myForm.reset();
       });
   }
+
+  public unsuscribe(): Subject<void> {
+
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+    return this.unsubscribe$;
+  };
 }
