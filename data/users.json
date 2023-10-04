@@ -13,7 +13,7 @@
       "name": "Alejandro",
       "password": "789",
       "email": "dzfxdbdfbd",
-      "check": true,
+      "check": false,
       "country": "San Marino",
       "city": "dffdgdfgd",
       "id": 3
@@ -41,7 +41,7 @@
       "password": "dfg",
       "email": "dfgdfgdf@sfsd",
       "check": true,
-      "country": "Islas Salomón",
+      "country": "Sudán del Sur",
       "city": "sdfsdfsd",
       "id": 8
     },
@@ -76,7 +76,7 @@
       "name": "Raquel",
       "password": "xcv",
       "email": "xcvxcvxcv@sdgs",
-      "check": null,
+      "check": true,
       "country": "Países Bajos",
       "city": "xfxvxcvx",
       "id": 12

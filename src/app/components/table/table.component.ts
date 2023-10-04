@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 import { User } from 'src/app/interfaces/interfaces';
 import { UsersService } from 'src/app/services/users-service.service';
@@ -22,6 +22,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    // this.getUsers()
     this.updateTable();
     this.showMessage();
   };
@@ -35,24 +36,23 @@ export class TableComponent implements OnInit, OnDestroy {
 
     this.usersService.getUpdateTable$()
       .pipe(
-        /*switchMap( (result)  => {
-          if (result) {
+        switchMap( (result) => {
+          //if (result) {
 
-            this.usersService.setUpdateTable$(!result);
             return this.usersService.getUsers$();
-          }
-        }),*/
+          //}
+        }),
         takeUntil(this.unsuscribe$())
       )
-      .subscribe( /*users*/ (result) => {
+      .subscribe( users /*(result)*/ => {
 
-        if (result) {
+        this.users = users;
 
-          this.usersService.setUpdateTable$(!result);
-          this.getUsers();
-          /*return this.usersService.getUsers$();*/
-        }
-          // this.users = users;
+        // if (result) {
+
+        //   this.usersService.setUpdateTable$(!result);
+        //   this.getUsers();
+        // }
       });
   };
 

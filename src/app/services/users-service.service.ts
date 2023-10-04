@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environments } from 'src/environment/environment';
 
 import { User } from '../interfaces/interfaces';
-import { Observable, catchError, map, BehaviorSubject, of, Subject } from 'rxjs';
+import { Observable, catchError, map, BehaviorSubject, of, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class UsersService {
 
   private http = inject( HttpClient );
   private baseUrl: string = environments.baseUrl;
-  private updateTable$ = new BehaviorSubject<boolean>(true);
+  private updateTable$ = new BehaviorSubject<boolean>(true);// TODO: quitar esta variable del servicio
   private currentUser$ = new Subject<User>();
   private successMessage$ = new BehaviorSubject<string>("");
 
@@ -49,7 +49,10 @@ export class UsersService {
 
   public getUsers$(): Observable<User[]> {
 
-    return this.http.get<User[]>( `${this.baseUrl}/users` );
+    return this.http.get<User[]>( `${this.baseUrl}/users`)
+      // .pipe(
+      //   tap( () => this.setUpdateTable$(false))
+      // )
   };
 
   public addUser$( user: User ): Observable<User> {
