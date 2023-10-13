@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Countries, User } from 'src/app/interfaces/interfaces';
 
 import { UsersService } from 'src/app/services/users-service.service';
@@ -101,19 +101,20 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     const user = this.getFormUser() as User;
 
     this.usersService.addUser$(user)
-      .pipe( takeUntil ( this.unsuscribe()))
+      .pipe(
+        switchMap(() => this.usersService.getUsers$( )),
+        takeUntil( this.unsuscribe())
+      )
       .subscribe(() => {
 
         this.myForm.reset();
-        this.usersService.setUpdateTable$(true);
-        this.usersService.setSuccessMessage$( "USUARIO CREADO" );
+        this.usersService.setSuccessMessage( "USUARIO CREADO" );
       });
   }
 
   public getCurrentUser() {
     this.usersService.getCurrentUser$()
       .pipe( takeUntil( this.unsuscribe()))
-      // .pipe( filter( user => user.id ))
       .subscribe( result => {
 
         this.currentUser = result;
@@ -128,11 +129,13 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
     // console.log(this.currentUser);
     // console.log(user);
     this.usersService.modUser$( user )
-      .pipe( takeUntil( this.unsuscribe()))
+      .pipe(
+        switchMap(() => this.usersService.getUsers$( )),
+        takeUntil( this.unsuscribe())
+      )
       .subscribe( () => {
 
-        this.usersService.setUpdateTable$(true);
-        this.usersService.setSuccessMessage$( "USUARIO EDITADO" );
+        this.usersService.setSuccessMessage( "USUARIO EDITADO" );
         this.currentUser = undefined;
         this.myForm.reset();
       });

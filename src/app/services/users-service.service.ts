@@ -4,65 +4,65 @@ import { HttpClient } from '@angular/common/http';
 import { environments } from 'src/environment/environment';
 
 import { User } from '../interfaces/interfaces';
-import { Observable, catchError, map, BehaviorSubject, of, Subject, tap } from 'rxjs';
+import { Observable, catchError, map, BehaviorSubject, of, Subject, tap, distinctUntilChanged } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  private http = inject( HttpClient );
-  private baseUrl: string = environments.baseUrl;
-  private updateTable$ = new BehaviorSubject<boolean>(true);// TODO: quitar esta variable del servicio
-  private currentUser$ = new Subject<User>();
-  private successMessage$ = new BehaviorSubject<string>("");
+  private _http = inject( HttpClient );
+  private _baseUrl: string = environments.baseUrl;
+  private _users$ = new Subject<User[]>();
+  private _currentUser$ = new Subject<User>();
+  private _successMessage$ = new BehaviorSubject<string>("");
 
-  public setUpdateTable$( value: boolean ): void {
+  public setUsers( users: User[] ): void {
 
-    this.updateTable$.next(value);
+    this._users$.next(users);
   };
 
-  public getUpdateTable$(): Observable<boolean> {
+  public getUsersTable$(): Observable<User[]> {
 
-    return this.updateTable$.asObservable();
+    return this._users$.asObservable();
   };
 
-  public setCurrentUser$( user: User ): void {
+  public setCurrentUser( user: User ): void {
 
-    this.currentUser$.next( user );
+    this._currentUser$.next( user );
   };
 
   public getCurrentUser$(): Observable<User> {
 
-    return this.currentUser$.asObservable();
+    return this._currentUser$.asObservable();
   };
 
-  public setSuccessMessage$( message: string): void {
+  public setSuccessMessage( message: string): void {
 
-    this.successMessage$.next(message);
+    this._successMessage$.next(message);
   };
 
   public getSuccessMessage$(): Observable<string> {
 
-    return this.successMessage$.asObservable();
+    return this._successMessage$.asObservable();
   };
 
   public getUsers$(): Observable<User[]> {
 
-    return this.http.get<User[]>( `${this.baseUrl}/users`)
-      // .pipe(
-      //   tap( () => this.setUpdateTable$(false))
-      // )
+    return this._http.get<User[]>( `${this._baseUrl}/users`).pipe(
+
+      tap( (users: User[]) => this.setUsers(users))
+    );
   };
 
   public addUser$( user: User ): Observable<User> {
 
-    return this.http.post<User>( `${this.baseUrl}/users`, user );
+    return this._http.post<User>( `${this._baseUrl}/users`, user )
   };
 
   public eraseUser$( id: number ): Observable<boolean> {
 
-    return this.http.delete( `${this.baseUrl}/users/${ id }` )
+    return this._http.delete( `${this._baseUrl}/users/${ id }` )
     .pipe(
       map( resp => true ),
       catchError( err => of( false ))
@@ -71,11 +71,11 @@ export class UsersService {
 
   public getUserById$( id: number ): Observable<User> {
 
-    return this.http.get<User>( `${this.baseUrl}/users/${ id }` );
+    return this._http.get<User>( `${this._baseUrl}/users/${ id }` );
   };
 
   public modUser$( user: User ): Observable<User> {
 
-    return this.http.patch<User>( `${this.baseUrl}/users/${ user.id }`, user );
+    return this._http.patch<User>( `${this._baseUrl}/users/${ user.id }`, user );
   };
 }

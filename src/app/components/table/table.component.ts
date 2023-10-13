@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { User } from 'src/app/interfaces/interfaces';
 import { UsersService } from 'src/app/services/users-service.service';
@@ -22,7 +22,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    // this.getUsers()
+    this.getUsers();
     this.updateTable();
     this.showMessage();
   };
@@ -34,25 +34,14 @@ export class TableComponent implements OnInit, OnDestroy {
 
   public updateTable() {
 
-    this.usersService.getUpdateTable$()
+    this.usersService.getUsersTable$()
       .pipe(
-        switchMap( (result) => {
-          //if (result) {
-
-            return this.usersService.getUsers$();
-          //}
-        }),
-        takeUntil(this.unsuscribe$())
+        takeUntil(this.unsuscribe$()),
+        // tap(console.log)
       )
-      .subscribe( users /*(result)*/ => {
+      .subscribe( (users: User[]) => {
 
         this.users = users;
-
-        // if (result) {
-
-        //   this.usersService.setUpdateTable$(!result);
-        //   this.getUsers();
-        // }
       });
   };
 
@@ -92,7 +81,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.usersService.getUserById$( id )
       .pipe( takeUntil( this.unsuscribe$()))
       .subscribe( user => {
-        this.usersService.setCurrentUser$( user );
+        this.usersService.setCurrentUser( user );
         // console.log( this.usersService.getCurrentUser());
       });
     // console.log(user);
@@ -109,13 +98,13 @@ export class TableComponent implements OnInit, OnDestroy {
       .subscribe( (users: User[]) => {
 
         this.users = users;
-        this.usersService.setSuccessMessage$( "USUARIO BORRADO" );
+        this.usersService.setSuccessMessage( "USUARIO BORRADO" );
       });
   };
 
   public closeMessage() {
 
-    this.usersService.setSuccessMessage$( "" );
+    this.usersService.setSuccessMessage( "" );
   }
 
   public unsuscribe$(): Subject<void> {
