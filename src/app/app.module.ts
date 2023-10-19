@@ -7,12 +7,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormComponent } from './components/reactive-form/reactive-form.component';
 import { TableComponent } from './components/table/table.component';
+import { InterceptorsComponent } from './interceptors/interceptors/interceptors.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReactiveFormComponent,
-    TableComponent
+    TableComponent,
+    InterceptorsComponent
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,7 @@ import { ValidatorsService } from 'src/app/services/validators/validators.servic
 
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
+import { UserDataServiceService } from 'src/app/services/user-data-service.service';
 
 @Component({
   selector: 'app-reactive-form',
@@ -25,6 +26,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
   private formBuilder = inject(FormBuilder);
   private validatorsService = inject(ValidatorsService);
   private usersService = inject(UsersService);
+  private userDataService = inject( UserDataServiceService );
   private unsubscribe$ = new Subject<void>();
 
   public myForm: FormGroup = this.formBuilder.group({
@@ -113,7 +115,7 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
   }
 
   public getCurrentUser() {
-    this.usersService.getCurrentUser$()
+    this.userDataService.getCurrentUser$()
       .pipe( takeUntil( this.unsuscribe()))
       .subscribe( result => {
 

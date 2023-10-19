@@ -3,6 +3,7 @@ import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { User } from 'src/app/interfaces/interfaces';
+import { UserDataServiceService } from 'src/app/services/user-data-service.service';
 import { UsersService } from 'src/app/services/users-service.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { UsersService } from 'src/app/services/users-service.service';
 export class TableComponent implements OnInit, OnDestroy {
 
   private usersService = inject(UsersService);
+  private userDataService = inject( UserDataServiceService );
   public users: User[] = [];
   public message = "";
   private unsubscribe$ = new Subject<void>();
@@ -34,7 +36,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   public updateTable() {
 
-    this.usersService.getUsersTable$()
+    this.userDataService.getUsersTable$()
       .pipe(
         takeUntil(this.unsuscribe$()),
         // tap(console.log)
@@ -81,7 +83,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.usersService.getUserById$( id )
       .pipe( takeUntil( this.unsuscribe$()))
       .subscribe( user => {
-        this.usersService.setCurrentUser( user );
+        this.userDataService.setCurrentUser( user );
         // console.log( this.usersService.getCurrentUser());
       });
     // console.log(user);

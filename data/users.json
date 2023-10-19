@@ -28,7 +28,7 @@
       "id": 4
     },
     {
-      "name": "Lola",
+      "name": "Juanpi",
       "password": "sdf",
       "email": "sfsdfsd@sdfsd",
       "check": true,
@@ -73,13 +73,31 @@
       "id": 11
     },
     {
-      "name": "Raquel",
+      "name": "Andrés",
       "password": "xcv",
       "email": "xcvxcvxcv@sdgs",
       "check": true,
       "country": "Países Bajos",
       "city": "xfxvxcvx",
       "id": 12
+    },
+    {
+      "name": "Manu",
+      "password": "asd",
+      "email": "asdasdas@sdfsd",
+      "check": false,
+      "country": "Somalia",
+      "city": "asdasdasda",
+      "id": 13
+    },
+    {
+      "name": "Rosío",
+      "password": "qwe",
+      "email": "qweqwe@ded",
+      "check": null,
+      "country": "Guyana",
+      "city": "qweqew",
+      "id": 14
     }
   ]
 }

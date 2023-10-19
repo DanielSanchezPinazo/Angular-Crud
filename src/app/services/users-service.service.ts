@@ -4,7 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environments } from 'src/environment/environment';
 
 import { User } from '../interfaces/interfaces';
-import { Observable, catchError, map, BehaviorSubject, of, Subject, tap, distinctUntilChanged } from 'rxjs';
+import { Observable, catchError, map, BehaviorSubject, of, tap } from 'rxjs';
+import { UserDataServiceService } from './user-data-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,30 +13,9 @@ import { Observable, catchError, map, BehaviorSubject, of, Subject, tap, distinc
 export class UsersService {
 
   private _http = inject( HttpClient );
+  private userDataService = inject( UserDataServiceService );
   private _baseUrl: string = environments.baseUrl;
-  private _users$ = new Subject<User[]>();
-  private _currentUser$ = new Subject<User>();
   private _successMessage$ = new BehaviorSubject<string>("");
-
-  public setUsers( users: User[] ): void {
-
-    this._users$.next(users);
-  };
-
-  public getUsersTable$(): Observable<User[]> {
-
-    return this._users$.asObservable();
-  };
-
-  public setCurrentUser( user: User ): void {
-
-    this._currentUser$.next( user );
-  };
-
-  public getCurrentUser$(): Observable<User> {
-
-    return this._currentUser$.asObservable();
-  };
 
   public setSuccessMessage( message: string): void {
 
@@ -51,7 +31,7 @@ export class UsersService {
 
     return this._http.get<User[]>( `${this._baseUrl}/users`).pipe(
 
-      tap( (users: User[]) => this.setUsers(users))
+      tap( (users: User[]) => this.userDataService.setUsers(users))
     );
   };
 
