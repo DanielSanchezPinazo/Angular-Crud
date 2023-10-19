@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Countries, User } from 'src/app/interfaces/interfaces';
 
 import { UsersService } from 'src/app/services/users-service.service';
@@ -23,9 +23,9 @@ export class ReactiveFormComponent implements OnInit, OnDestroy {
   public countries: string[] = Object.values(Countries);
   // public users = signal<User[]>([]);
   public currentUser?: User;
-  private formBuilder = inject(FormBuilder);
-  private validatorsService = inject(ValidatorsService);
-  private usersService = inject(UsersService);
+  private formBuilder = inject( FormBuilder );
+  private validatorsService = inject( ValidatorsService );
+  private usersService = inject( UsersService );
   private userDataService = inject( UserDataServiceService );
   private unsubscribe$ = new Subject<void>();
 

@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Observable, catchError } from 'rxjs';
+import { inject } from '@angular/core';
+import { UsersService } from '../users-service.service';
 
 @Injectable()
 export class Interceptors implements HttpInterceptor {
+
+  private usersService = inject( UsersService );
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -15,7 +19,16 @@ export class Interceptors implements HttpInterceptor {
 
     return next.handle( addHeaders ).pipe(
 
+      catchError( err => {
 
+        if( err instanceof HttpErrorResponse ) {
+
+          console.log("Error de interceptor");
+          this.usersService.setSuccessMessage( "Algo ha fallado, intentelo mas tarde" );
+        }
+
+        throw err;
+       } )
     );
   }
 
