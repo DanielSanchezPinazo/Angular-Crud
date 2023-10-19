@@ -4,17 +4,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormComponent } from './components/reactive-form/reactive-form.component';
 import { TableComponent } from './components/table/table.component';
-import { InterceptorsComponent } from './interceptors/interceptors/interceptors.component';
+import { Interceptors } from './services/interceptors/interceptors';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReactiveFormComponent,
     TableComponent,
-    InterceptorsComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +21,11 @@ import { InterceptorsComponent } from './interceptors/interceptors/interceptors.
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: Interceptors ,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
